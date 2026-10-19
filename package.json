@@ -1,0 +1,33 @@
+{
+  "name": "architect-agent",
+  "version": "0.1.0",
+  "description": "Hierarchical orchestrator of Claude agents: plans, picks the cheapest capable model per node, executes, reviews.",
+  "scripts": {
+    "architect": "tsx src/cli.ts",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc",
+    "gen:claude": "tsx src/gen-claude.ts",
+    "tool": "tsx src/run-tools.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleadewale-ops/architect-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aleadewale-ops/architect-agent/issues"
+  },
+  "homepage": "https://github.com/aleadewale-ops/architect-agent#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Alessandro Adewale"
+}
