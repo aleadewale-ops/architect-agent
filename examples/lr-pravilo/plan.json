@@ -1,0 +1,87 @@
+{
+  "summary": "The root agent (opus) writes the final explanation in Slovenian: what the Littlewood-Richardson rule computes, how LR tableaux state it, and a hand enumeration of the LR tableaux for s_{21}*s_{21}. Two independent children run in parallel. A sonnet research node collects verified references (textbooks, arXiv, MIT OCW). A sonnet computation node checks the expansion independently with code, using both LR-tableau enumeration and Schur-polynomial algebra. The root compares its hand result with the computed one and does not finish until they agree.",
+  "assumptions": [
+    "The deliverable is written in Slovenian, because the task is in Slovenian; standard English terms (e.g. 'Littlewood-Richardson tableau', 'lattice word') may be given in parentheses.",
+    "The worked example is s_{21}*s_{21}; the expected expansion is s_{42}+s_{411}+s_{33}+2s_{321}+s_{3111}+s_{222}+s_{2211}, which the computation node must confirm independently rather than assume.",
+    "'Computational verification' means a short reproducible script (Python/SymPy, optionally SageMath) with its output shown; no formal proof of the LR rule itself is required.",
+    "Sources are limited to the listed knowledge sources plus standard textbooks (Fulton, Stanley EC2, Macdonald, Sagan) cited bibliographically."
+  ],
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Explanation of the LR rule and hand verification (in Slovenian)",
+      "goal": "Write, in Slovenian, a self-contained explanation of the Littlewood-Richardson rule for an advanced undergraduate or early graduate reader. Cover: (1) what it computes: the structure constants c^nu_{lambda,mu} in s_lambda*s_mu = sum_nu c^nu_{lambda,mu} s_nu in the ring of symmetric functions, and the equivalent interpretations (multiplicities in tensor products of GL_n irreducibles, intersection numbers of Schubert classes in the Grassmannian cohomology), each stated in one or two sentences; (2) the combinatorial formulation: skew shape nu/lambda, semistandard fillings of content mu, the reverse reading word (right to left, top to bottom) and the lattice/Yamanouchi condition, with a precise definition of an LR tableau and the statement c^nu_{lambda,mu} = #LR tableaux of shape nu/lambda and content mu; mention the necessary conditions |nu|=|lambda|+|mu| and lambda, mu contained in nu, and the symmetry c^nu_{lambda,mu}=c^nu_{mu,lambda}; (3) a hand verification of s_{21}*s_{21}: list every nu of size 6 containing (2,1), draw (in text/ASCII or a table) every LR tableau of shape nu/(21) and content (2,1), and justify for each rejected filling which condition fails; (4) the sanity check sum_nu c^nu f^nu = C(6,3)*f^{21}*f^{21} = 80 using hook-length dimensions; (5) a section that summarizes the child 'lr-compute' script and output and compares them with the hand result term by term; (6) a reference list built from the child 'lit-sources' output, citing the relevant chapter or section. If the hand result and the computed result disagree, find the error before writing the final version. Keep it concise, at most about 2500 words.",
+      "kind": "synthesis",
+      "complexity": 3,
+      "criticality": "high",
+      "needsResearch": false,
+      "knowledgeDomains": ["math"],
+      "suggestedModel": "opus",
+      "rationale": "The explanation and the hand enumeration form one line of reasoning that must be exact and must check the children's outputs, so it stays in a single strong node.",
+      "dependsOn": [],
+      "acceptanceCriteria": [
+        "The definition of an LR tableau states the semistandard condition, the content, and the lattice-word condition on the reverse reading word explicitly and correctly.",
+        "The hand enumeration lists every LR tableau for s_{21}*s_{21}, including both tableaux of shape (3,2,1)/(2,1), and the final expansion matches the output of lr-compute exactly.",
+        "The dimension check sum c^nu f^nu = 80 is carried out with each f^nu shown (9,10,5,16,10,5,9).",
+        "Every reference in the list comes from lit-sources and has a chapter, section or arXiv id; the text is in Slovenian."
+      ],
+      "estimatedOutputTokens": 4500,
+      "suggestedSkills": []
+    },
+    {
+      "id": "lit-sources",
+      "parentId": "root",
+      "title": "Key references for the LR rule",
+      "goal": "Compile a short, verified annotated bibliography on the Littlewood-Richardson rule. Include: (a) standard textbooks with the exact chapter or section where the rule and LR tableaux are stated and proved, namely W. Fulton, 'Young Tableaux' (LMS Student Texts 35, 1997, Ch. 5 and the Appendix on LR rule variants), R. P. Stanley, 'Enumerative Combinatorics Vol. 2' (Sec. 7.10 and Appendix 1 by Fomin), I. G. Macdonald, 'Symmetric Functions and Hall Polynomials' (Ch. I, Sec. 9), and B. Sagan, 'The Symmetric Group' (Sec. 4.9); (b) 3-5 arXiv or open-access papers giving modern proofs or interpretations, for example Knutson-Tao honeycombs/saturation, Buch's exposition of the saturation conjecture, Vakil's geometric LR rule, and Stembridge's concise proof (Electron. J. Combin.); give arXiv ids in the form arXiv:math/NNNNNNN or arXiv:YYMM.NNNNN [math.CO] only if you have confirmed them; (c) 1-3 MIT OpenCourseWare course pages or lecture notes that cover Schur functions and the LR rule (e.g. 18.212 Algebraic Combinatorics or 18.315), giving course number, term and the lecture where it appears. For each entry give one line on what it offers the reader. Return at most 12 entries. Mark anything you could not verify as 'unverified' and do not guess identifiers.",
+      "kind": "research",
+      "complexity": 2,
+      "criticality": "medium",
+      "needsResearch": true,
+      "knowledgeDomains": ["math"],
+      "suggestedModel": "sonnet",
+      "rationale": "Searching the sources would flood the root's context, and sonnet is the policy floor for research and is enough for accurate bibliographic lookup.",
+      "dependsOn": [],
+      "acceptanceCriteria": [
+        "Every textbook entry gives author, title, year, and the chapter or section that covers the LR rule.",
+        "Every arXiv entry has an arXiv id that was verified during the search; unverified items are marked as such.",
+        "At least one MIT OCW entry has a course number and a concrete lecture or notes reference."
+      ],
+      "estimatedOutputTokens": 1200,
+      "suggestedSkills": ["pdf"]
+    },
+    {
+      "id": "lr-compute",
+      "parentId": "root",
+      "title": "Computational check of s_{21}*s_{21}",
+      "goal": "Write and run a short, self-contained Python script (SymPy only, no SageMath required) that checks the expansion of the Schur product s_{21}*s_{21} in two independent ways. Method A: enumerate by brute force all semistandard fillings of the skew shape nu/(2,1) with content (2,1) (two 1s and one 2), for every partition nu of 6 containing (2,1); keep those whose reverse reading word (read each row right to left, rows top to bottom) is a lattice word; count them per nu. Method B: build the Schur polynomials s_lambda(x1..x6) in 6 variables with the bialternant formula det(x_i^{lambda_j+n-j})/Vandermonde (or via semistandard tableaux), expand s_{21}^2 minus sum_nu c_nu s_nu with the Method A coefficients, and confirm that the result simplifies to 0. Also compute f^nu by the hook-length formula and check that sum_nu c_nu f^nu = 80. Report the script (at most about 80 lines), its printed output, the list of LR tableaux found (as row lists), and the final expansion. Do not hardcode the expected answer.",
+      "kind": "computation",
+      "complexity": 2,
+      "criticality": "high",
+      "needsResearch": false,
+      "knowledgeDomains": ["math"],
+      "suggestedModel": "sonnet",
+      "rationale": "A cheap, independent machine check guards the hand enumeration against errors, and sonnet writes this kind of combinatorial code reliably where haiku might get the reading-word convention wrong.",
+      "dependsOn": [],
+      "acceptanceCriteria": [
+        "Method A and Method B give identical coefficients, and the polynomial difference in Method B is exactly 0 with 6 variables (at least as many variables as the largest number of rows, which is 4).",
+        "The reported expansion lists every nu with a nonzero coefficient, including multiplicity 2 for (3,2,1), and the hook-length sum equals 80.",
+        "The script is included in full, runs as-is, and its actual printed output is shown."
+      ],
+      "estimatedOutputTokens": 1500,
+      "suggestedSkills": ["SymPy", "SageMath"]
+    }
+  ],
+  "risks": [
+    "Conventions for the reading word and lattice condition vary between sources (reverse reading word vs. column reading, English vs. French notation). The root must pick Fulton's English-notation convention, state it once and use it throughout, and lr-compute must implement the same convention.",
+    "Missing or double-counting LR tableaux in the hand enumeration, especially the two tableaux of shape (3,2,1)/(2,1). This is guarded by the independent two-method computation and the dimension check that must total 80.",
+    "Hallucinated arXiv ids or OCW course numbers. lit-sources must mark anything it has not verified, and the root cites only verified entries.",
+    "Language drift: the root must write in Slovenian and keep the technical terms consistent."
+  ],
+  "followUpTasks": [
+    "Formalize the statement of the LR rule, or check small cases, in Lean 4 with mathlib4 (the symmetric-function infrastructure there is still limited).",
+    "Illustrate the geometric side: interpret c^{nu}_{21,21} as Schubert intersection numbers in Gr(3,6) and check with Macaulay2's Schubert2 package.",
+    "Show alternative models of the same coefficients (Knutson-Tao honeycombs/puzzles, Berenstein-Zelevinsky patterns) on the same example.",
+    "Build an interactive web tool that enumerates LR tableaux for user-chosen lambda, mu and nu."
+  ]
+}
